@@ -63,6 +63,7 @@ class WoZaiXiaoYuanPuncher:
             data = utils.processJson('.cache/cache.json').read()
             print('='*50)
             print(data)
+            print(type(data))
             for item in data:
                 print('*'*50)
                 print(item)
