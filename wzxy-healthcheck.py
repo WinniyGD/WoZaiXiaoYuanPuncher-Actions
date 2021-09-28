@@ -62,6 +62,7 @@ class WoZaiXiaoYuanPuncher:
             print("找到cache文件，正在更新cache中的jwsession...")
             data = utils.processJson('.cache/cache.json').read()
             for item in data:
+                print('*'*50)
                 print(item)
                 item['jwsession'] = jwsession                 
         utils.processJson(".cache/cache.json").write(data)
