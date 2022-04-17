@@ -79,6 +79,8 @@ class WoZaiXiaoYuanPuncher:
         self.header['Host'] = "student.wozaixiaoyuan.com"
         self.header['Content-Type'] = "application/x-www-form-urlencoded"
         self.header['JWSESSION'] = self.getJwsession()
+        self.header['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat'
+        
         sign_data = {
             "answers": '["0","1","1"]',
             "latitude": os.environ['WZXY_LATITUDE'],
@@ -96,6 +98,7 @@ class WoZaiXiaoYuanPuncher:
             "signatureHeader": '7f391999cf1548a70a5d41498f78f0ba4ee11e127dd78e23d7cd50614afc6d0e',
         }
         data = urlencode(sign_data)
+        print(data)
         self.session = requests.session()
         response = self.session.post(url=url, data=data, headers=self.header)
         response = json.loads(response.text)
