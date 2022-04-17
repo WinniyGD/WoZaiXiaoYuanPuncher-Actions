@@ -89,6 +89,11 @@ class WoZaiXiaoYuanPuncher:
             "province": os.environ['WZXY_PROVINCE'],
             "township": os.environ['WZXY_TOWNSHIP'],
             "street": os.environ['WZXY_STREET'],
+            "areacode": '440104',
+            "towncode": '440104003',
+            "citycode": '156440100',
+            "timestampHeader": str(time.time()).split('.')[0]+"000",
+            "signatureHeader": '7f391999cf1548a70a5d41498f78f0ba4ee11e127dd78e23d7cd50614afc6d0e',
         }
         data = urlencode(sign_data)
         self.session = requests.session()
