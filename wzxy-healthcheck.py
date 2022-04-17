@@ -5,6 +5,10 @@ import os
 import utils
 from urllib.parse import urlencode
 import time
+import hashlib
+sign_time = int(round(time.time() * 1000)) #13位
+content = f"广东省_{t}_广州市"
+signature = hashlib.sha256(content.encode('utf-8')).hexdigest()
 
 class WoZaiXiaoYuanPuncher:
     def __init__(self):
@@ -80,7 +84,6 @@ class WoZaiXiaoYuanPuncher:
         self.header['Content-Type'] = "application/x-www-form-urlencoded"
         self.header['JWSESSION'] = self.getJwsession()
         self.header['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat'
-        
         sign_data = {
             "answers": '["0","1","1"]',
             "latitude": os.environ['WZXY_LATITUDE'],
@@ -94,11 +97,12 @@ class WoZaiXiaoYuanPuncher:
             "areacode": '440104',
             "towncode": '440104003',
             "citycode": '156440100',
-            "timestampHeader": str(time.time()).split('.')[0]+"000",
-            "signatureHeader": '7f391999cf1548a70a5d41498f78f0ba4ee11e127dd78e23d7cd50614afc6d0e',
+            "timestampHeader": sign_time,
+            "signatureHeader": signature,
         }
+        print(sign_data)
         data = urlencode(sign_data)
-        print(data)
+        
         self.session = requests.session()
         response = self.session.post(url=url, data=data, headers=self.header)
         response = json.loads(response.text)
