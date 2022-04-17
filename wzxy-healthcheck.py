@@ -7,7 +7,7 @@ from urllib.parse import urlencode
 import time
 import hashlib
 sign_time = int(round(time.time() * 1000)) #13位
-content = f"广东省_{t}_广州市"
+content = f"广东省_{sign_time}_广州市"
 signature = hashlib.sha256(content.encode('utf-8')).hexdigest()
 
 class WoZaiXiaoYuanPuncher:
