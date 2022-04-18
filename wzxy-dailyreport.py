@@ -139,7 +139,7 @@ class WoZaiXiaoYuanPuncher:
             "street": os.environ['WZXY_STREET'],
             "myArea": "",
             "areacode": "",
-            "userId": ""
+            "userId": "",
             "areacode": '440104',
             "towncode": '440104003',
             "citycode": '156440100',
