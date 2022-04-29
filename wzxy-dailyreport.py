@@ -203,26 +203,29 @@ class WoZaiXiaoYuanPuncher:
 
    # 推送打卡结果
     def sendNotification(self):
+        
+        if os.environ.get("PUSH_TOKEN"):
+            
+            print("正在进行消息推送...")
+            url = 'http://www.pushplus.plus/send'
+            notifyToken = os.environ['PUSH_TOKEN']
+            notifyTime = utils.getCurrentTime()
+            notifyResult = self.getResult()
 
-        print("正在进行消息推送...")
-        url = 'http://www.pushplus.plus/send'
-        notifyToken = os.environ['PUSH_TOKEN']
-        notifyTime = utils.getCurrentTime()
-        notifyResult = self.getResult()
+            content = json.dumps({
+                "打卡项目": "健康打卡",
+                "打卡情况": notifyResult,
+                "打卡时间": notifyTime
+            },ensure_ascii = False)
 
-        content = json.dumps({
-            "打卡项目": "健康打卡",
-            "打卡情况": notifyResult,
-            "打卡时间": notifyTime
-        },ensure_ascii = False)
-
-        msg = {
-            "token": notifyToken,
-            "title": "⏰ 我在校园打卡结果通知",
-            "content": content,
-            "template": "json"
-        }
-        requests.post(url, data = msg)
+            msg = {
+                "token": notifyToken,
+                "title": "⏰ 我在校园打卡结果通知",
+                "content": content,
+                "template": "json"
+            }
+            requests.post(url, data = msg)
+            
 
 
 if __name__ == "__main__":
