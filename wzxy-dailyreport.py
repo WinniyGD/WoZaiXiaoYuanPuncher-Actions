@@ -201,106 +201,34 @@ class WoZaiXiaoYuanPuncher:
         else:
             return "❌ 打卡失败，发生未知错误，请检查日志"
 
-    # 推送打卡结果
     def sendNotification(self):
         notifyTime = utils.getCurrentTime()
         notifyResult = self.getResult()
-        notifySeq = self.getSeq()
 
-        if os.environ.get("SCT_KEY"):
-            # serverchan 推送
-            notifyToken = os.environ["SCT_KEY"]
-            url = "https://sctapi.ftqq.com/{}.send"
-            body = {
-                "title": "⏰ 我在校园打卡结果通知",
-                "desp": "打卡项目：日检日报\n\n打卡情况：{}\n\n打卡时段：{}\n\n打卡时间：{}".format(
-                    notifyResult, notifySeq, notifyTime
-                ),
-            }
-            requests.post(url.format(notifyToken), data=body)
-            print("消息已通过 Serverchan-Turbo 推送，请检查推送结果")
-        if os.environ.get("PUSH_TOKEN"):
-            # pushplus 推送
-            url = "http://www.pushplus.plus/send"
-            notifyToken = os.environ["PUSHPLUS_TOKEN"]
-            content = json.dumps(
-                {
-                    "打卡项目": "日检日报",
-                    "打卡情况": notifyResult,
-                    "打卡时段": notifySeq,
-                    "打卡时间": notifyTime,
-                },
-                ensure_ascii=False,
-            )
-            msg = {
-                "token": notifyToken,
-                "title": "⏰ 我在校园打卡结果通知",
-                "content": content,
-                "template": "json",
-            }
-            body=json.dumps(msg).encode(encoding='utf-8')
-            headers = {'Content-Type':'application/json'}
-            r = requests.post(url, data=body, headers=headers).json()
-            if r["code"] == 200:
-                print("消息经 pushplus 推送成功")
-            else:
-                print("pushplus: " + r['code'] + ": " + r['msg'])
-                print("消息经 pushplus 推送失败，请检查错误信息")
-        if os.environ.get('GOBOT_URL'):
-            # go_cqhttp 推送
-            GOBOT_URL = os.environ["GOBOT_URL"]
-            GOBOT_TOKEN = os.environ["GOBOT_TOKEN"]
-            GOBOT_QQ = os.environ["GOBOT_QQ"]
-            url = f'{GOBOT_URL}?access_token={GOBOT_TOKEN}&{GOBOT_QQ}&message=⏰ 我在校园打卡结果通知\n---------\n\n打卡项目：健康打卡\n\n打卡情况：{notifyResult}\n\n打卡时间: {notifyTime}'
-            r = requests.get(url).json()
-            if r["status"] == "ok":
-                print("消息经 go-cqhttp 推送成功！")
-            else:
-                print("go-cqhttp:" + r['retcode'] + ": " + r['msg'] + " " + r['wording'])
-                print("消息经 go-cqhttp 推送失败，请检查错误信息")
-        if os.environ.get('DD_BOT_ACCESS_TOKEN'):
-            # 钉钉推送
-            DD_BOT_ACCESS_TOKEN = os.environ["DD_BOT_ACCESS_TOKEN"]
-            DD_BOT_SECRET = os.environ["DD_BOT_SECRET"]
-            timestamp = str(round(time.time() * 1000))  # 时间戳
-            secret_enc = DD_BOT_SECRET.encode("utf-8")
-            string_to_sign = "{}\n{}".format(timestamp, DD_BOT_SECRET)
-            string_to_sign_enc = string_to_sign.encode("utf-8")
-            hmac_code = hmac.new(
-                secret_enc, string_to_sign_enc, digestmod=hashlib.sha256
-            ).digest()
-            sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))  # 签名
-            print("开始使用 钉钉机器人 推送消息...", end="")
-            url = f"https://oapi.dingtalk.com/robot/send?access_token={DD_BOT_ACCESS_TOKEN}&timestamp={timestamp}&sign={sign}"
-            headers = {"Content-Type": "application/json;charset=utf-8"}
-            data = {
-                "msgtype": "text",
-                "text": {
-                    "content": f"⏰ 我在校园打卡结果通知\n---------\n打卡项目：日检日报\n\n打卡情况：{notifyResult}\n\n打卡时间: {notifyTime}"
-                },
-            }
-            r = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=15).json()
-            if not r['errcode']:
-                print('消息经 钉钉机器人 推送成功！')
-            else:
-                print("dingding:" + r['errcode'] + ": " + r['errmsg'])
-                print('消息经 钉钉机器人 推送失败，请检查错误信息')
-        if os.environ.get('BARK_TOKEN'):
-            # bark 推送
-            notifyToken = os.environ["BARK_TOKEN"]
-            req = "{}/{}/{}".format(notifyToken, "⏰ 我在校园打卡（日检日报）结果通知", notifyResult)
-            requests.get(req)
-            print("消息经bark推送成功")
-        if os.environ.get("MIAO_CODE"):
-            baseurl = "https://miaotixing.com/trigger"
-            body = {
-                "id": os.environ["MIAO_CODE"],
-                "text": "打卡项目：日检日报\n\n打卡情况：{}\n\n打卡时段：{}\n\n打卡时间：{}".format(
-                    notifyResult, notifySeq, notifyTime
-                ),
-            }
-            requests.post(baseurl, data=body)
-            print("消息已通过 喵推送 进行通知，请检查推送结果")
+        url = "http://www.pushplus.plus/send"
+        notifyToken = os.environ["PUSHPLUS_TOKEN"]
+        content = json.dumps(
+            {
+                "打卡项目": "健康打卡",
+                "打卡情况": notifyResult,
+                "打卡时间": notifyTime
+            },
+            ensure_ascii=False,
+        )
+        msg = {
+            "token": notifyToken,
+            "title": "⏰ 我在校园打卡结果通知",
+            "content": content,
+            "template": "json",
+        }
+        body=json.dumps(msg).encode(encoding='utf-8')
+        headers = {'Content-Type':'application/json'}
+        r = requests.post(url, data=body, headers=headers).json()
+        if r["code"] == 200:
+            print("消息经 pushplus 推送成功")
+        else:
+            print("pushplus: " + r['code'] + ": " + r['msg'])
+            print("消息经 pushplus 推送失败，请检查错误信息")
 
 
 if __name__ == "__main__":
