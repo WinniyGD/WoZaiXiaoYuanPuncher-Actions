@@ -39,7 +39,7 @@ jobs:
         GOBOT_QQ: ${{secrets.GOBOT_QQ}}
         GOBOT_TOKEN: ${{secrets.GOBOT_TOKEN}}
         BARK_TOKEN: ${{secrets.BARK_TOKEN}}
-        PUSH_TOKEN: ${{secrets.PUSHPLUS_TOKEN}}
+        PUSH_TOKEN: ${{secrets.PUSH_TOKEN}}
         MIAO_CODE: ${{secrets.MIAO_CODE}}
         WZXY_USERNAME: ${{secrets.USERNAME}}
         WZXY_PASSWORD: ${{secrets.PASSWORD}}
