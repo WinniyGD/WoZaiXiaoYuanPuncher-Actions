@@ -175,8 +175,6 @@ class WoZaiXiaoYuanPuncher:
             "template": "json"
         }
         requests.post(url, data = msg)
-    else:
-        print("未设置PUSH_TOKEN，将不会推送消息")
 
 
 if __name__ == "__main__":
