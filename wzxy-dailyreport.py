@@ -219,7 +219,7 @@ class WoZaiXiaoYuanPuncher:
             }
             requests.post(url.format(notifyToken), data=body)
             print("消息已通过 Serverchan-Turbo 推送，请检查推送结果")
-        if os.environ.get("PUSHPLUS_TOKEN"):
+        if os.environ.get("PUSH_TOKEN"):
             # pushplus 推送
             url = "http://www.pushplus.plus/send"
             notifyToken = os.environ["PUSHPLUS_TOKEN"]
