@@ -153,35 +153,31 @@ class WoZaiXiaoYuanPuncher:
         else:
             return "❌ 打卡失败，发生未知错误，请检查日志"
 
-    # 推送打卡结果
+   # 推送打卡结果
     def sendNotification(self):
-        notifyTime = utils.getCurrentTime()
-        notifyResult = self.getResult()
-
-        url = "http://www.pushplus.plus/send"
-        notifyToken = os.environ["PUSHPLUS_TOKEN"]
-        content = json.dumps(
-            {
+        # 如果开启了消息推送
+        if os.environ['PUSH_TOKEN']:
+            print("正在进行消息推送...")
+            url = 'http://www.pushplus.plus/send'
+            notifyToken = os.environ['PUSH_TOKEN']
+            notifyTime = utils.getCurrentTime()
+            notifyResult = self.getResult()
+            
+            content = json.dumps({
                 "打卡项目": "健康打卡",
                 "打卡情况": notifyResult,
                 "打卡时间": notifyTime
-            },
-            ensure_ascii=False,
-        )
-        msg = {
-            "token": notifyToken,
-            "title": "⏰ 我在校园打卡结果通知",
-            "content": content,
-            "template": "json",
-        }
-        body=json.dumps(msg).encode(encoding='utf-8')
-        headers = {'Content-Type':'application/json'}
-        r = requests.post(url, data=body, headers=headers).json()
-        if r["code"] == 200:
-            print("消息经 pushplus 推送成功")
+            },ensure_ascii = False)
+
+            msg = {
+                "token": notifyToken,
+                "title": "⏰ 我在校园打卡结果通知",
+                "content": content,
+                "template": "json"
+            }
+            requests.post(url, data = msg)
         else:
-            print("pushplus: " + r['code'] + ": " + r['msg'])
-            print("消息经 pushplus 推送失败，请检查错误信息")
+            print("未设置PUSH_TOKEN，将不会推送消息")
 
 
 if __name__ == "__main__":
